@@ -1,8 +1,8 @@
 <template>
-  <div class="home">
+  <div class="yt-home">
     <div class="yt-list">
       <div  v-for="(item) in ytData.items" :key="item.id"  >
-        <div v-if="item.snippet.thumbnails.high" style="margin:10px 5px;">
+        <div v-if="item.snippet.thumbnails.high" style="margin:10px 10px;">
           <div class="yt-block" >
             <a class="position-relative" :href="'/playvideo?videoId='+item.id">
               <img class="yt-video-img" :src="item.snippet.thumbnails.high.url" alt="">
@@ -19,10 +19,7 @@
         </div>
       </div>
     </div>
-    <div style="display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction:column ">
+    <div  class="yt-load" >
         <span>載入中</span>
         <div class="loader"></div>
       </div>
@@ -30,7 +27,6 @@
 </template>
 
 <script>
-
 import axios from 'axios';
 export default {
   name: 'Home',
@@ -77,11 +73,11 @@ export default {
   components: {
   },
   methods: {
-    async scroll(){
+    scroll(){
       var scrollMaxY = window.scrollMaxY || (document.documentElement.scrollHeight - document.documentElement.clientHeight)
       var st = window.pageYOffset || document.documentElement.scrollTop
       if((st/scrollMaxY).toFixed(2) >= 0.95 && this.ytDataStatus){
-        if(this.$store.state.youtubeList.length != 0) {
+         if(this.$store.state.youtubeList.length != 0) {
           this.ytDataStatus = false
           setTimeout(() => {
             axios.get('https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&chart=mostPopular&maxResults=12&key=AIzaSyDUllM1yxu4azkRdObu3pPfpVmeq_yuSGs'+'&pageToken='+this.$store.state.nextPageToken)
@@ -106,7 +102,6 @@ export default {
             })
           },500)
         }
-        
       }
     },
     handleVideoTime(timeData){
@@ -145,21 +140,25 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style scoped lang="scss">
 $mob:767px;
 @mixin mob() {
   @media screen and (max-width: $mob) {
     @content;
   }
 }
-.home{
+.yt-home{
   margin-top: 70px;
 }
 .yt-list{
   display:flex;
   flex-wrap: wrap;
-  width:100%;
+  width:85%;
   justify-content: center;
+  margin:auto;
+  @include mob {
+    width:100%;
+  }
 }
 .yt-collect{
   right:0;
@@ -186,5 +185,11 @@ $mob:767px;
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+.yt-load{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction:column 
 }
 </style>

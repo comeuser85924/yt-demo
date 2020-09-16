@@ -5,7 +5,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     youtubeList:[],
-    nextPageToken:null
+    nextPageToken:null,
+    youtubeUrl:null,
   },
   mutations: {
     SET_YOUTUBELIST(state, data){
@@ -13,6 +14,9 @@ export default new Vuex.Store({
     },
     SET_YOUTUBELIST_NEXT(state, data){
       state.nextPageToken = data;
+    },
+    SET_YOUTUBE_URL(state, data){
+      state.youtubeUrl = data;
     },
   },
   actions: {

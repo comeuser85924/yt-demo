@@ -53,8 +53,7 @@ $mob:767px;
   }
 }
 .playvideo{
-  margin-top:70px;
-  margin:auto;
+  margin:70px auto;
   width:640px;
   @include mob {
     width:100%;
