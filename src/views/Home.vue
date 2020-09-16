@@ -4,7 +4,7 @@
       <div  v-for="(item) in ytData.items" :key="item.id"  >
         <div v-if="item.snippet.thumbnails.high" style="margin:10px 5px;">
           <div class="yt-block" >
-            <a class="position-relative" :href="devUrl+'/playvideo?videoId='+item.id">
+            <a class="position-relative" :href="'/playvideo?videoId='+item.id">
               <img class="yt-video-img" :src="item.snippet.thumbnails.high.url" alt="">
               <span class="position-absolute yt-video-time">
                 {{handleVideoTime(item.contentDetails.duration)}}
