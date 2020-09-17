@@ -33,7 +33,6 @@ export default {
       this.ytTitle = response.data.items[0].snippet.localized.title
       this.ytDescription = response.data.items[0].snippet.localized.description
       var date = new Date(response.data.items[0].snippet.publishedAt);
-      console.log( date.getFullYear()+'-' + (date.getMonth()+1) + '-'+date.getDate())
     })
   },
   mounted(){
