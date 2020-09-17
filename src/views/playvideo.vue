@@ -32,7 +32,6 @@ export default {
       this.ytData = response.data
       this.ytTitle = response.data.items[0].snippet.localized.title
       this.ytDescription = response.data.items[0].snippet.localized.description
-      var date = new Date(response.data.items[0].snippet.publishedAt);
     })
   },
   mounted(){
