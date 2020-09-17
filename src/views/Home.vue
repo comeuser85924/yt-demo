@@ -37,7 +37,7 @@ export default {
       devUrl: (window.location.host=="localhost:8080") ? 'http://localhost:8080' :window.location.host,
       ytDataStatus:true,
       nextPage:null,
-      apikey:process.env.youtubeKey
+      apikey:process.env
     }
     
   },
