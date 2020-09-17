@@ -23,7 +23,7 @@ export default {
         ytData:[],
         ytTitle:null,
         ytDescription:null,
-        ytUrl:'https://www.googleapis.com/youtube/v3/videos?id='+this.$route.query.videoId+'&key=AIzaSyDUllM1yxu4azkRdObu3pPfpVmeq_yuSGs&part=snippet',
+        ytUrl:'https://www.googleapis.com/youtube/v3/videos?id='+this.$route.query.videoId+'&key=AIzaSyDiX_hFkzy9enM7e4eh1oWovmTb0a0r4Mc&part=snippet',
     }
   },
    beforeMount() {

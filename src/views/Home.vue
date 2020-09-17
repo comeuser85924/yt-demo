@@ -52,7 +52,7 @@ export default {
     }
   },
   async mounted(){
-    await axios.get('https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&chart=mostPopular&maxResults=12&key=AIzaSyDUllM1yxu4azkRdObu3pPfpVmeq_yuSGs')
+    await axios.get('https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&chart=mostPopular&maxResults=12&key=AIzaSyDiX_hFkzy9enM7e4eh1oWovmTb0a0r4Mc')
       .then((response) => {
         this.ytData = response.data
         if(this.$store.state.youtubeList.length != 0) {
@@ -80,7 +80,7 @@ export default {
          if(this.$store.state.youtubeList.length != 0) {
           this.ytDataStatus = false
           setTimeout(() => {
-            axios.get('https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&chart=mostPopular&maxResults=12&key=AIzaSyDUllM1yxu4azkRdObu3pPfpVmeq_yuSGs'+'&pageToken='+this.$store.state.nextPageToken)
+            axios.get('https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&chart=mostPopular&maxResults=12&key=AIzaSyDiX_hFkzy9enM7e4eh1oWovmTb0a0r4Mc'+'&pageToken='+this.$store.state.nextPageToken)
             .then((response) => {
               this.ytDataStatus = true
               this.ytData.items = this.ytData.items.concat(response.data.items);
@@ -92,7 +92,7 @@ export default {
         }else{
           this.ytDataStatus = false
           setTimeout(() => {
-            axios.get('https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&chart=mostPopular&maxResults=12&key=AIzaSyDUllM1yxu4azkRdObu3pPfpVmeq_yuSGs'+'&pageToken='+this.ytData.nextPageToken)
+            axios.get('https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&chart=mostPopular&maxResults=12&key=AIzaSyDiX_hFkzy9enM7e4eh1oWovmTb0a0r4Mc'+'&pageToken='+this.ytData.nextPageToken)
             .then((response) => {
               this.ytDataStatus = true
               this.ytData.items = this.ytData.items.concat(response.data.items);
