@@ -54,6 +54,7 @@ export default {
   },
   async mounted(){
     console.log(this.apikey)
+    console.log(require('dotenv').config())
     await axios.get('https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&chart=mostPopular&maxResults=12&key=AIzaSyDiX_hFkzy9enM7e4eh1oWovmTb0a0r4Mc')
       .then((response) => {
         this.ytData = response.data
