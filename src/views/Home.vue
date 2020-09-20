@@ -1,7 +1,7 @@
 <template>
   <div class="yt-home">
     <div class="yt-list">
-      <div  v-for="(item) in ytData.items" :key="item.id"  >
+      <div  v-for="(item) in $store.state.youtubeList" :key="item.id"  >
         <div v-if="item.snippet.thumbnails.high" style="margin:10px 10px;">
           <div class="yt-block" >
             <a class="position-relative" :href="'/playvideo?videoId='+item.id">
@@ -12,7 +12,7 @@
             </a>
              <span class="text-left textover-two p18">{{item.snippet.title}}</span>
           </div>
-          <button class=" btn btn-1 btn-1a" :id="'btn_collect_'+item.id"  @click="handleCollect(item)">
+          <button class="btn btn-1 btn-1a" :id="'btn_collect_'+item.id"   @click="handleCollect(item)">
             <img style="width:20px;margin:0 10px;" src="https://s.verywed.com/s1/2020/09/16/1600228092_06576620b9ebd63ea5d6e9e1e7aa7af0.png" alt="">
             <span :id="'collect_'+item.id">加入收藏</span>
           </button>
@@ -37,36 +37,38 @@ export default {
       devUrl: (window.location.host=="localhost:8080") ? 'http://localhost:8080' :window.location.host,
       ytDataStatus:true,
       nextPage:null,
-      apikey:process.env
+      apikey:process.env,
     }
     
   },
+  computed:{
+    localData(){
+      return JSON.parse(localStorage.getItem('collect'))
+    }
+  },
   updated(){
-    var localData = JSON.parse(localStorage.getItem('collect'));
-    if(localData !=null){
-      for (var i = 0; i < localData.length; i++) {
-        if(localData[i].id && document.getElementById('collect_'+localData[i].id)){
-          document.getElementById('collect_'+localData[i].id).innerHTML= '取消收藏'
-          document.getElementById('btn_collect_'+localData[i].id).style.background= '#FB031D'
+    if(this.localData !=null){
+      for (var i = 0; i < this.localData.length; i++) {
+        if(this.localData[i].id && document.getElementById('collect_'+this.localData[i].id)){
+          document.getElementById('collect_'+this.localData[i].id).innerHTML= '取消收藏'
+          document.getElementById('btn_collect_'+this.localData[i].id).style.background= '#FB031D'
         }
       }
     }
   },
   async mounted(){
-    console.log(this.apikey)
     await axios.get('https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&chart=mostPopular&maxResults=12&key=AIzaSyDiX_hFkzy9enM7e4eh1oWovmTb0a0r4Mc')
-      .then((response) => {
-        this.ytData = response.data
-        if(this.$store.state.youtubeList.length != 0) {
-          this.ytData.items = this.$store.state.youtubeList
-        }
-      })
-    var localData = JSON.parse(localStorage.getItem('collect'));
-    if(localData !=null){
-      for (var i = 0; i < localData.length; i++) {
-        if(localData[i].id && document.getElementById('collect_'+localData[i].id)){
-          document.getElementById('collect_'+localData[i].id).innerHTML= '取消收藏'
-          document.getElementById('btn_collect_'+localData[i].id).style.background= '#FB031D'
+    .then((response) => {
+      if(this.$store.state.youtubeList.length == 0) {
+        this.$store.commit('SET_YOUTUBELIST', response.data.items)
+        this.$store.commit('SET_YOUTUBELIST_NEXT',response.data.nextPageToken)
+      }
+    })
+    if(this.localData !=null){
+      for (var i = 0; i < this.localData.length; i++) {
+        if(this.localData[i].id && document.getElementById('collect_'+this.localData[i].id)){
+          document.getElementById('collect_'+this.localData[i].id).innerHTML= '取消收藏'
+          document.getElementById('btn_collect_'+this.localData[i].id).style.background= '#FB031D'
         }
       }
     }
@@ -85,55 +87,41 @@ export default {
             axios.get('https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&chart=mostPopular&maxResults=12&key=AIzaSyDiX_hFkzy9enM7e4eh1oWovmTb0a0r4Mc'+'&pageToken='+this.$store.state.nextPageToken)
             .then((response) => {
               this.ytDataStatus = true
-              this.ytData.items = this.ytData.items.concat(response.data.items);
-              this.ytData.nextPageToken = response.data.nextPageToken
-              this.$store.commit('SET_YOUTUBELIST',this.ytData.items)
-              this.$store.commit('SET_YOUTUBELIST_NEXT',response.data.nextPageToken)
-            })
-          },500)
-        }else{
-          this.ytDataStatus = false
-          setTimeout(() => {
-            axios.get('https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&chart=mostPopular&maxResults=12&key=AIzaSyDiX_hFkzy9enM7e4eh1oWovmTb0a0r4Mc'+'&pageToken='+this.ytData.nextPageToken)
-            .then((response) => {
-              this.ytDataStatus = true
-              this.ytData.items = this.ytData.items.concat(response.data.items);
-              this.ytData.nextPageToken = response.data.nextPageToken
-              this.$store.commit('SET_YOUTUBELIST',this.ytData.items)
+              this.$store.commit('SET_YOUTUBELIST',this.$store.state.youtubeList.concat(response.data.items))
               this.$store.commit('SET_YOUTUBELIST_NEXT',response.data.nextPageToken)
             })
           },500)
         }
+        console.log(this.$store.state)
       }
     },
     handleVideoTime(timeData){
       return timeData.replace('PT','').replace('H',':').replace('M',':').replace('S','')
     },
     handleCollect(item){
-      var localData = JSON.parse(localStorage.getItem('collect'));
       var status = false;
-      if(localData != null ){
-        for(var i = 0; i < localData.length; i++) {
-          if(localData[i].id === item.id) {
+      if(this.localData != null ){
+        for(var i = 0; i < this.localData.length; i++) {
+          if(this.localData[i].id === item.id) {
             status = true
             document.getElementById('collect_'+item.id).innerHTML= '加入收藏'
             document.getElementById('btn_collect_'+item.id).style.background= 'transparent'
-            localData.splice(i, 1);
-            localStorage.setItem('collect', JSON.stringify(localData))
+            this.localData.splice(i, 1);
+            localStorage.setItem('collect', JSON.stringify(this.localData))
           }
         }
         if(!status){
           document.getElementById('collect_'+item.id).innerHTML= '取消收藏'
           document.getElementById('btn_collect_'+item.id).style.background= '#FB031D'
-          localData.push(item)
-          localStorage.setItem('collect', JSON.stringify(localData))
+          this.localData.push(item)
+          localStorage.setItem('collect', JSON.stringify(this.localData))
         }
       }else{
-        if(localData == null ) localData = []
+        if(this.localData == null ) this.localData = []
         document.getElementById('collect_'+item.id).innerHTML= '取消收藏'
         document.getElementById('btn_collect_'+item.id).style.background= '#FB031D'
-        localData.push(item)
-        localStorage.setItem('collect', JSON.stringify(localData))
+        this.localData.push(item)
+        localStorage.setItem('collect', JSON.stringify(this.localData))
       }
     }
   },
@@ -193,5 +181,8 @@ $mob:767px;
   justify-content: center;
   align-items: center;
   flex-direction:column 
+}
+.active{
+  background: #FB031D;
 }
 </style>
