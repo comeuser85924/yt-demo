@@ -1,5 +1,6 @@
 import Vue from 'vue'
-import App from './App.vue'
+// import App from './App.vue'
+import index from './views/index.vue'
 import router from './router'
 import store from './store'
 // import axios from 'axios'; //全局引入axios套件
@@ -14,5 +15,5 @@ require('videojs-youtube')
 new Vue({
   router,
   store,
-  render: h => h(App)
+  render: h => h(index)
 }).$mount('#app')
